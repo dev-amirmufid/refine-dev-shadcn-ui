@@ -130,22 +130,26 @@ export const BlogPostList = () => {
     columns,
   });
 
-  // const { data: categoryData } = useMany({
-  //   resource: "categories",
-  //   ids:
-  //     tableData?.data?.map((item) => item?.category?.id).filter(Boolean) ?? [],
-  //   queryOptions: {
-  //     enabled: !!tableData?.data,
-  //   },
-  // });
+  const {
+    tableQueryResult: { data: tableData },
+  } = tableProps.refineCore;
 
-  // setOptions((prev) => ({
-  //   ...prev,
-  //   meta: {
-  //     ...prev.meta,
-  //     categoryData,
-  //   },
-  // }));
+  const { data: categoryData } = useMany({
+    resource: "categories",
+    ids:
+      tableData?.data?.map((item) => item?.category?.id).filter(Boolean) ?? [],
+    queryOptions: {
+      enabled: !!tableData?.data,
+    },
+  });
+
+  tableProps.setOptions((prev) => ({
+    ...prev,
+    meta: {
+      ...prev.meta,
+      categoryData,
+    },
+  }));
 
   return (
     <List>
