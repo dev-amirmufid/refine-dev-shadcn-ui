@@ -3,7 +3,6 @@ import ThemedSiderV2 from "./sider";
 import SidebarMobile from "./sider-mobile";
 import { Toaster } from "@/components/ui/toaster";
 import type { LayoutProps } from "./type";
-import { Breadcrumb } from "../breadcrumb";
 import { CircleUser, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 export const ThemedLayoutV2: React.FC<LayoutProps> = ({
   children,
@@ -67,14 +67,13 @@ export const ThemedLayoutV2: React.FC<LayoutProps> = ({
             </DropdownMenu>
           </Header>
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-            <Breadcrumb />
             {children}
           </main>
 
           {Footer ? (
             <Footer />
           ) : (
-            <footer className="py-2.5 border-t border-border mt-4 flex-none flex flex-row items-center justify-between px-4 text-xs gap-x-4">
+            <footer className="py-2.5 border-t border-border flex-none flex flex-row items-center justify-between px-4 text-xs gap-x-4">
               <span>
                 <a href="https://amirmufid.site">amirmufid</a> © 2024
               </span>

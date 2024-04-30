@@ -6,20 +6,20 @@ import {
   useResource,
   useTranslate,
 } from "@refinedev/core";
-import { useContext } from "react";
-
 import {
   RefineButtonClassNames,
   RefineButtonTestIds,
 } from "@refinedev/ui-types";
-import { PlusSquare } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import type { CreateButtonProps } from "../types";
+import React, { useContext } from "react";
 
-export const CreateButton: React.FC<CreateButtonProps> = ({
+import { EyeIcon } from "lucide-react";
+import type { ShowButtonProps } from "../types";
+import { Button } from "@/components/ui/button";
+
+export const ShowButton: React.FC<ShowButtonProps> = ({
   resource: resourceNameFromProps,
   resourceNameOrRouteName: propResourceNameOrRouteName,
+  recordItemId,
   hideText = false,
   accessControl,
   meta,
@@ -38,26 +38,24 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
     accessControl?.hideIfUnauthorized ??
     accessControlContext.options.buttons.hideIfUnauthorized;
 
+  const { showUrl: generateShowUrl } = useNavigation();
+
   const translate = useTranslate();
 
-  const { createUrl: generateCreateUrl } = useNavigation();
-
-  const { resource } = useResource(
+  const { id, resource } = useResource(
     resourceNameFromProps ?? propResourceNameOrRouteName
   );
 
   const { data } = useCan({
     resource: resource?.name,
-    action: "create",
+    action: "show",
+    params: { id: recordItemId ?? id, resource },
     queryOptions: {
       enabled: accessControlEnabled,
     },
-    params: {
-      resource,
-    },
   });
 
-  const createButtonDisabledTitle = () => {
+  const showButtonDisabledTitle = () => {
     if (data?.can) return "";
     else if (data?.reason) return data.reason;
     else
@@ -67,7 +65,11 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
       );
   };
 
-  const createUrl = resource ? generateCreateUrl(resource, meta) : "";
+  const showUrl =
+    resource && (recordItemId || id)
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        generateShowUrl(resource, recordItemId! ?? id!, meta)
+      : "";
 
   if (accessControlEnabled && hideIfUnauthorized && !data?.can) {
     return null;
@@ -77,11 +79,14 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
     <Button
       asChild
       disabled={data?.can === false}
-      data-testid={RefineButtonTestIds.CreateButton}
-      className={RefineButtonClassNames.CreateButton}
+      title={showButtonDisabledTitle()}
+      data-testid={RefineButtonTestIds.ShowButton}
+      className={RefineButtonClassNames.ShowButton}
       {...rest}
     >
       <Link
+        to={showUrl}
+        replace={false}
         onClick={(e: React.PointerEvent<HTMLButtonElement>) => {
           if (data?.can === false) {
             e.preventDefault();
@@ -92,12 +97,9 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
             onClick(e);
           }
         }}
-        to={createUrl}
-        replace={false}
-        title={createButtonDisabledTitle()}
       >
-        <PlusSquare className={cn(!hideText ? "mr-2" : "")} size={16} />
-        {!hideText && (children ?? translate("buttons.create", "Create"))}
+        <EyeIcon size={16} className="mr-2" />
+        {!hideText && (children ?? translate("buttons.show", "Show"))}
       </Link>
     </Button>
   );

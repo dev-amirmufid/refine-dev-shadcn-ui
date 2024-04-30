@@ -74,3 +74,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  .scroll-area-content {
+    @apply h-[calc(100vh-113px)] w-[calc(100vw)];
+  }
+  @media (min-width: 768px) {
+    .scroll-area-content {
+      @apply h-[calc(100vh-113px)] w-[calc(100vw-220px)];
+    }
+  }
+  @media (min-width: 1024px) {
+    .scroll-area-content {
+      @apply h-[calc(100vh-113px)] w-[calc(100vw-280px)];
+    }
+  }
+}

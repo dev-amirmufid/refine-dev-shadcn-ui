@@ -23,7 +23,6 @@ import {
   CategoryShow,
 } from "./pages/categories";
 import { ThemedLayoutV2 } from "./components/layout";
-import "./App.css";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import { ForgotPassword } from "./pages/forgotPassword";

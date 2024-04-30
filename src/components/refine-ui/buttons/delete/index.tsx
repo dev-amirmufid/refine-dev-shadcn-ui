@@ -13,10 +13,10 @@ import React, { useContext } from "react";
 
 import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { useDeleteHelper } from "@/hooks";
 import { DeleteContext } from "@/providers";
-import type { DeleteButtonProps } from "../type";
+import type { DeleteButtonProps } from "../types";
 
 export const DeleteButton: React.FC<DeleteButtonProps> = ({
   resource: resourceNameFromProps,

@@ -6,20 +6,21 @@ import {
   useResource,
   useTranslate,
 } from "@refinedev/core";
-import { useContext } from "react";
-
 import {
   RefineButtonClassNames,
   RefineButtonTestIds,
 } from "@refinedev/ui-types";
-import { PlusSquare } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import type { CreateButtonProps } from "../types";
+import React, { useContext } from "react";
 
-export const CreateButton: React.FC<CreateButtonProps> = ({
+import { cn } from "@/lib/utils";
+import { Edit } from "lucide-react";
+import type { EditButtonProps } from "../types";
+import { Button } from "@/components/ui/button";
+
+export const EditButton: React.FC<EditButtonProps> = ({
   resource: resourceNameFromProps,
   resourceNameOrRouteName: propResourceNameOrRouteName,
+  recordItemId,
   hideText = false,
   accessControl,
   meta,
@@ -40,24 +41,22 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
 
   const translate = useTranslate();
 
-  const { createUrl: generateCreateUrl } = useNavigation();
+  const { editUrl: generateEditUrl } = useNavigation();
 
-  const { resource } = useResource(
+  const { id, resource } = useResource(
     resourceNameFromProps ?? propResourceNameOrRouteName
   );
 
   const { data } = useCan({
     resource: resource?.name,
-    action: "create",
+    action: "edit",
+    params: { id: recordItemId ?? id, resource },
     queryOptions: {
       enabled: accessControlEnabled,
     },
-    params: {
-      resource,
-    },
   });
 
-  const createButtonDisabledTitle = () => {
+  const editButtonDisabledTitle = () => {
     if (data?.can) return "";
     else if (data?.reason) return data.reason;
     else
@@ -67,7 +66,11 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
       );
   };
 
-  const createUrl = resource ? generateCreateUrl(resource, meta) : "";
+  const editUrl =
+    resource && (recordItemId ?? id)
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        generateEditUrl(resource, recordItemId! ?? id!, meta)
+      : "";
 
   if (accessControlEnabled && hideIfUnauthorized && !data?.can) {
     return null;
@@ -77,27 +80,25 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
     <Button
       asChild
       disabled={data?.can === false}
-      data-testid={RefineButtonTestIds.CreateButton}
-      className={RefineButtonClassNames.CreateButton}
+      title={editButtonDisabledTitle()}
+      data-testid={RefineButtonTestIds.EditButton}
+      className={RefineButtonClassNames.EditButton}
+      size={hideText ? "icon" : rest.size ?? "default"}
+      onClick={(e: React.PointerEvent<HTMLButtonElement>) => {
+        if (data?.can === false) {
+          e.preventDefault();
+          return;
+        }
+        if (onClick) {
+          e.preventDefault();
+          onClick(e);
+        }
+      }}
       {...rest}
     >
-      <Link
-        onClick={(e: React.PointerEvent<HTMLButtonElement>) => {
-          if (data?.can === false) {
-            e.preventDefault();
-            return;
-          }
-          if (onClick) {
-            e.preventDefault();
-            onClick(e);
-          }
-        }}
-        to={createUrl}
-        replace={false}
-        title={createButtonDisabledTitle()}
-      >
-        <PlusSquare className={cn(!hideText ? "mr-2" : "")} size={16} />
-        {!hideText && (children ?? translate("buttons.create", "Create"))}
+      <Link to={editUrl} replace={false}>
+        <Edit className={cn(!hideText ? "mr-2" : "")} size={16} />
+        {!hideText && (children ?? translate("buttons.edit", "Edit"))}
       </Link>
     </Button>
   );

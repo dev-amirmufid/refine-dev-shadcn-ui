@@ -1,12 +1,39 @@
-import { Button } from "@/components/ui/button";
-import { type GetManyResponse, useMany, useNavigation } from "@refinedev/core";
+import { List } from "@/components/refine-ui/crud/list";
+import { DataTable } from "@/components/refine-ui/data-table";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  type GetManyResponse,
+  useMany,
+  useNavigation,
+  type BaseRecord,
+} from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
 import React from "react";
 
 export const BlogPostList = () => {
-  const columns = React.useMemo<ColumnDef<any>[]>(
+  const columns = React.useMemo<ColumnDef<BaseRecord>[]>(
     () => [
+      {
+        id: "select",
+        accessorKey: "select",
+        enableSorting: false,
+        enableHiding: false,
+        enableGlobalFilter: false,
+        enableColumnFilter: false,
+        header: ({ table }) => {
+          return <DataTable.CheckAll {...table}>OK</DataTable.CheckAll>;
+        },
+        cell: ({ row }) => (
+          <Checkbox
+            className="translate-y-[2px]"
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            key={`checkbox-${row.original.id}`}
+          />
+        ),
+      },
       {
         id: "id",
         accessorKey: "id",
@@ -60,6 +87,10 @@ export const BlogPostList = () => {
       {
         id: "actions",
         accessorKey: "id",
+        enableSorting: false,
+        enableHiding: false,
+        enableGlobalFilter: false,
+        enableColumnFilter: false,
         header: "Actions",
         cell: function render({ getValue }) {
           return (
@@ -95,62 +126,31 @@ export const BlogPostList = () => {
 
   const { edit, show, create } = useNavigation();
 
-  const {
-    getHeaderGroups,
-    getRowModel,
-    setOptions,
-    refineCore: {
-      tableQueryResult: { data: tableData },
-    },
-    getState,
-    setPageIndex,
-    getCanPreviousPage,
-    getPageCount,
-    getCanNextPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-  } = useTable({
+  const tableProps = useTable({
     columns,
   });
 
-  const { data: categoryData } = useMany({
-    resource: "categories",
-    ids:
-      tableData?.data?.map((item) => item?.category?.id).filter(Boolean) ?? [],
-    queryOptions: {
-      enabled: !!tableData?.data,
-    },
-  });
+  // const { data: categoryData } = useMany({
+  //   resource: "categories",
+  //   ids:
+  //     tableData?.data?.map((item) => item?.category?.id).filter(Boolean) ?? [],
+  //   queryOptions: {
+  //     enabled: !!tableData?.data,
+  //   },
+  // });
 
-  setOptions((prev) => ({
-    ...prev,
-    meta: {
-      ...prev.meta,
-      categoryData,
-    },
-  }));
+  // setOptions((prev) => ({
+  //   ...prev,
+  //   meta: {
+  //     ...prev.meta,
+  //     categoryData,
+  //   },
+  // }));
 
   return (
-    <>
-      <div className="flex items-center">
-        <h1 className="text-lg font-semibold md:text-2xl">Inventory</h1>
-      </div>
-      <div
-        className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
-        x-chunk="dashboard-02-chunk-1"
-      >
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h3 className="text-2xl font-bold tracking-tight">
-            You have no products
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            You can start selling as soon as you add a product.
-          </p>
-          <Button className="mt-4">Add Product</Button>
-        </div>
-      </div>
-    </>
+    <List>
+      <DataTable {...tableProps} />
+    </List>
   );
 };
 

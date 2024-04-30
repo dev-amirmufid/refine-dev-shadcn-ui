@@ -1,23 +1,24 @@
 import {
   AccessControlContext,
+  pickNotDeprecated,
   useCan,
   useLink,
   useNavigation,
   useResource,
   useTranslate,
+  useUserFriendlyName,
 } from "@refinedev/core";
-import { useContext } from "react";
-
 import {
   RefineButtonClassNames,
   RefineButtonTestIds,
 } from "@refinedev/ui-types";
-import { PlusSquare } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import type { CreateButtonProps } from "../types";
+import React, { useContext } from "react";
 
-export const CreateButton: React.FC<CreateButtonProps> = ({
+import { List } from "lucide-react";
+import type { ListButtonProps } from "../types";
+import { Button } from "@/components/ui/button";
+
+export const ListButton: React.FC<ListButtonProps> = ({
   resource: resourceNameFromProps,
   resourceNameOrRouteName: propResourceNameOrRouteName,
   hideText = false,
@@ -38,17 +39,19 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
     accessControl?.hideIfUnauthorized ??
     accessControlContext.options.buttons.hideIfUnauthorized;
 
+  const { listUrl: generateListUrl } = useNavigation();
+
   const translate = useTranslate();
 
-  const { createUrl: generateCreateUrl } = useNavigation();
-
-  const { resource } = useResource(
+  const { resource, identifier } = useResource(
     resourceNameFromProps ?? propResourceNameOrRouteName
   );
 
+  const getUserFriendlyName = useUserFriendlyName();
+
   const { data } = useCan({
     resource: resource?.name,
-    action: "create",
+    action: "list",
     queryOptions: {
       enabled: accessControlEnabled,
     },
@@ -67,7 +70,7 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
       );
   };
 
-  const createUrl = resource ? generateCreateUrl(resource, meta) : "";
+  const listUrl = resource ? generateListUrl(resource, meta) : "";
 
   if (accessControlEnabled && hideIfUnauthorized && !data?.can) {
     return null;
@@ -75,13 +78,16 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
 
   return (
     <Button
-      asChild
       disabled={data?.can === false}
-      data-testid={RefineButtonTestIds.CreateButton}
-      className={RefineButtonClassNames.CreateButton}
+      asChild
+      title={createButtonDisabledTitle()}
+      data-testid={RefineButtonTestIds.ListButton}
+      className={RefineButtonClassNames.ListButton}
       {...rest}
     >
       <Link
+        to={listUrl}
+        replace={false}
         onClick={(e: React.PointerEvent<HTMLButtonElement>) => {
           if (data?.can === false) {
             e.preventDefault();
@@ -92,12 +98,27 @@ export const CreateButton: React.FC<CreateButtonProps> = ({
             onClick(e);
           }
         }}
-        to={createUrl}
-        replace={false}
-        title={createButtonDisabledTitle()}
       >
-        <PlusSquare className={cn(!hideText ? "mr-2" : "")} size={16} />
-        {!hideText && (children ?? translate("buttons.create", "Create"))}
+        <List size={16} className="mr-2" />
+        {!hideText &&
+          (children ??
+            translate(
+              `${
+                identifier ??
+                resourceNameFromProps ??
+                propResourceNameOrRouteName
+              }.titles.list`,
+              getUserFriendlyName(
+                resource?.meta?.label ??
+                  resource?.label ??
+                  identifier ??
+                  pickNotDeprecated(
+                    resourceNameFromProps,
+                    propResourceNameOrRouteName
+                  ),
+                "plural"
+              )
+            ))}
       </Link>
     </Button>
   );
