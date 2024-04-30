@@ -55,7 +55,7 @@ export const DataTablePagination: React.FC<
               <SelectValue placeholder={getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[5, 10, 25, 50].map((pageSize) => (
+              {[5, 10, 25, 50, 100, 1000, 100000].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

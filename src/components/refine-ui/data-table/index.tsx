@@ -44,6 +44,7 @@ export const DataTable = ({
     getAllColumns,
     getState,
     setGlobalFilter,
+    getTotalSize,
     refineCore: { tableQueryResult },
   } = tableProps;
   const { globalFilter } = getState();
@@ -51,6 +52,8 @@ export const DataTable = ({
   const rows = getRowModel().rows;
 
   const { width = 0, height = 0 } = useWindowSize();
+
+  const tableContainerRef = React.useRef<HTMLDivElement>();
 
   const renderColumnHeader = (header: Header<BaseRecord, unknown>) => {
     const { column } = header;
@@ -144,14 +147,23 @@ export const DataTable = ({
           totalCount={rows.length}
           data={rows}
           components={{
-            // Table: ({ style, ...props }) => {
-            //   return (
-            //     <Table
-            //       className="w-full border-collapse border-spacing-0"
-            //       {...props}
-            //     />
-            //   );
-            // },
+            Table: ({ style, ...props }) => {
+              const tableWidth = getTotalSize();
+              return (
+                <Table
+                  className="w-full border-collapse border-spacing-0"
+                  style={{
+                    ...style,
+                    width:
+                      !tableContainerRef?.current?.offsetWidth ||
+                      tableWidth <= tableContainerRef?.current?.offsetWidth
+                        ? "100%"
+                        : tableWidth,
+                  }}
+                  {...props}
+                />
+              );
+            },
             TableRow: (props) => {
               const index = props["data-index"];
               const row = rows[index];
