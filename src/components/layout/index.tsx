@@ -14,13 +14,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 export const ThemedLayoutV2: React.FC<LayoutProps> = ({
   children,
   darkModeProvider,
-  defaultDarkMode,
-  storageKey,
   Title,
   Footer,
 }) => {

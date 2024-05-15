@@ -55,7 +55,7 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({
 
   const ActiveLink = routerType === "legacy" ? LegacyLink : Link;
 
-  const { mutate: forgotPassword, isLoading } =
+  const { mutate: forgotPassword } =
     useForgotPassword<ForgotPasswordFormTypes>();
 
   const form = useForm<z.infer<typeof forgotPasswordSchema>>({

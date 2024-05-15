@@ -17,11 +17,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import React from "react";
 
-export const Breadcrumb: React.FC<any> = ({
-  showHome = true,
-  hideIcons = false,
-  meta,
-}) => {
+export const Breadcrumb: React.FC<any> = ({ showHome = true, meta }) => {
   const Link = useLink();
   const { breadcrumbs } = useBreadcrumb({
     meta,

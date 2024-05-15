@@ -1,10 +1,9 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { flexRender, type Header } from "@tanstack/react-table";
@@ -51,7 +50,8 @@ export const DataTable = ({
   const { isFetching, refetch, isSuccess } = tableQueryResult;
   const rows = getRowModel().rows;
 
-  const { width = 0, height = 0 } = useWindowSize();
+  const { height = 0 } = useWindowSize();
+  // const { width = 0, height = 0 } = useWindowSize();
 
   const tableContainerRef = React.useRef<HTMLDivElement>();
 

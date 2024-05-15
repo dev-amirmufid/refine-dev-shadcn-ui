@@ -1,10 +1,5 @@
-import {
-  AccessControlContext,
-  useBack,
-  useCan,
-  useResource,
-  useTranslate,
-} from "@refinedev/core";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { AccessControlContext, useTranslate } from "@refinedev/core";
 import {
   RefineButtonClassNames,
   RefineButtonTestIds,

@@ -8,10 +8,11 @@ import {
   type BaseRecord,
 } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
-import { type ColumnDef, flexRender } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import React from "react";
 
 export const BlogPostList = () => {
+  const { edit, show } = useNavigation();
   const columns = React.useMemo<ColumnDef<BaseRecord>[]>(
     () => [
       {
@@ -121,10 +122,8 @@ export const BlogPostList = () => {
         },
       },
     ],
-    []
+    [edit, show]
   );
-
-  const { edit, show, create } = useNavigation();
 
   const tableProps = useTable({
     columns,

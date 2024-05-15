@@ -71,7 +71,8 @@
     "dev": "refine dev",
     "build": "tsc && refine build",
     "preview": "refine start",
-    "refine": "refine"
+    "refine": "refine",
+    "lint": "eslint --fix --ext .ts,.tsx src ."
   },
   "browserslist": {
     "production": [

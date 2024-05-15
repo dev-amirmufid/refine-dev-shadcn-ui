@@ -5,7 +5,6 @@ import { useMemo, type FC, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { ThemedSiderV2Props } from "./type";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { SheetClose } from "@/components/ui/sheet";
 
 const ThemedSiderV2MenuItem: FC<{
   selectedKey?: string;

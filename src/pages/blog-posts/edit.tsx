@@ -22,7 +22,7 @@ export const BlogPostEdit = () => {
 
   React.useEffect(() => {
     setValue("category.id", blogPostsData?.category?.id);
-  }, [categoryOptions]);
+  }, [blogPostsData?.category?.id, categoryOptions, setValue]);
 
   return (
     <div style={{ padding: "16px" }}>
