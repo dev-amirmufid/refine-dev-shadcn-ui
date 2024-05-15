@@ -19,7 +19,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "verbatimModuleSyntax": true,
     "incremental": true
   },
   "include": ["src", "vite.config.ts"],

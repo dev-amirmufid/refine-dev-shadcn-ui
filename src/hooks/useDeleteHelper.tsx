@@ -10,12 +10,10 @@ import {
   useWarnAboutChange,
 } from "@refinedev/core";
 import { useContext } from "react";
-import type { MutateOptions } from "@tanstack/react-query";
 
 type DeleteHelperReturnType = CanReturnType & {
   isLoading: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mutate: (e?: MutateOptions<unknown, unknown, unknown, unknown>) => any; // TODO: UseDeleteReturnType fix
+  mutate: (e?: any) => any; // TODO: UseDeleteReturnType fix
 };
 
 export const useDeleteHelper = (
@@ -61,10 +59,7 @@ export const useDeleteHelper = (
 
   const { setWarnWhen } = useWarnAboutChange();
 
-  const onDeleteMutate = (
-    options?: MutateOptions<unknown, unknown, unknown, unknown>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): any => {
+  const onDeleteMutate = (options?: any): any => {
     if (accessControlEnabled && hideIfUnauthorized && !data?.can) {
       return;
     }
