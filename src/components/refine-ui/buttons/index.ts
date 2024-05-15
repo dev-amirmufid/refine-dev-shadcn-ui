@@ -1,5 +1,3 @@
-export type * from "./types";
-
 export { CreateButton } from "./create";
 export { EditButton } from "./edit";
 export { DeleteButton } from "./delete";
