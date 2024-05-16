@@ -38,7 +38,7 @@ export const DataTablePagination: React.FC<
   return (
     <div className="flex items-center justify-between px-2">
       <div className="flex-1 text-sm text-muted-foreground ">
-        (0 rows selected)
+        ({Object.entries(getState().rowSelection).length} rows selected)
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">

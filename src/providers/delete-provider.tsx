@@ -1,12 +1,11 @@
+import { DeleteActionModal } from "@/components/refine-ui/data-table/actions/delete";
+import { BaseKey } from "@refinedev/core";
 import React, { type PropsWithChildren, createContext, useState } from "react";
-// import { DeleteActionModal } from "../components/table/actions/delete";
 
 type DeleteDataType = {
   toogle: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  row: any;
-  resource: string;
-  redirectBack?: boolean;
+  recordItemId?: BaseKey;
+  resource?: string;
 };
 
 export interface DeleteContextType {
@@ -18,9 +17,9 @@ const DeleteContext = createContext<DeleteContextType | undefined>(undefined);
 
 const DeleteProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [data, setData] = useState<DeleteDataType>({
-    row: undefined,
-    resource: "",
+    recordItemId: undefined,
     toogle: false,
+    resource: undefined,
   });
 
   const updateData = (data: DeleteDataType) => {
@@ -30,10 +29,10 @@ const DeleteProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <DeleteContext.Provider value={{ data, updateData }}>
       {children}
-      {/* <DeleteActionModal
+      <DeleteActionModal
         data={data as DeleteDataType}
         updateData={updateData}
-      /> */}
+      />
     </DeleteContext.Provider>
   );
 };

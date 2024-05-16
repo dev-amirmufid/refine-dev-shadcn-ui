@@ -22,13 +22,21 @@ export const CheckAll: React.FC<CheckAllProps> = ({ children, ...table }) => {
     getIsAllPageRowsSelected,
     getIsSomeRowsSelected,
     toggleAllPageRowsSelected,
+    getState,
   } = table;
+
+  const selectedRows = Object.entries(getState().rowSelection).length;
+  const isAllPageRowsSelected = getIsAllPageRowsSelected();
+  const isSomeRowsSelected = getIsSomeRowsSelected();
 
   return (
     <div className="inline-flex items-center justify-center gap-2">
       <Checkbox
         checked={
-          getIsSomeRowsSelected() ? "indeterminate" : getIsAllPageRowsSelected()
+          isSomeRowsSelected ||
+          (isAllPageRowsSelected == false && selectedRows > 0)
+            ? "indeterminate"
+            : isAllPageRowsSelected
         }
         onCheckedChange={(value) => toggleAllPageRowsSelected(!!value)}
         className="translate-y-[2px]"
@@ -38,9 +46,7 @@ export const CheckAll: React.FC<CheckAllProps> = ({ children, ...table }) => {
         <Popover>
           <PopoverTrigger asChild>
             <Button
-              disabled={
-                !(getIsSomeRowsSelected() || getIsAllPageRowsSelected())
-              }
+              disabled={!(isSomeRowsSelected || isAllPageRowsSelected)}
               size={"icon"}
               variant={"ghost"}
               className="px-0 w-5"

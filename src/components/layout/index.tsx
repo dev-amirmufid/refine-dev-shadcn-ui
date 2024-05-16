@@ -86,7 +86,6 @@ export const ThemedLayoutV2: React.FC<LayoutProps> = ({
   };
 
   if (darkModeProvider) {
-    console.log("DARK MODE");
     return <Container />;
   }
 

@@ -33,6 +33,10 @@ import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TableVirtuoso } from "react-virtuoso";
 import { useWindowSize } from "usehooks-ts";
+import { RowActions } from "./actions";
+import { ShowAction } from "./actions/show";
+import { EditAction } from "./actions/edit";
+import { DeleteAction } from "./actions/delete";
 
 export const DataTable = ({
   ...tableProps
@@ -264,3 +268,7 @@ export const DataTable = ({
 };
 
 DataTable.CheckAll = CheckAll;
+DataTable.RowActions = RowActions;
+DataTable.ShowAction = ShowAction;
+DataTable.EditAction = EditAction;
+DataTable.DeleteAction = DeleteAction;

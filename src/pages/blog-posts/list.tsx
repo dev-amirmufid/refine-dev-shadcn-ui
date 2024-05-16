@@ -4,15 +4,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   type GetManyResponse,
   useMany,
-  useNavigation,
   type BaseRecord,
 } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef } from "@tanstack/react-table";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export const BlogPostList = () => {
-  const { edit, show } = useNavigation();
   const columns = React.useMemo<ColumnDef<BaseRecord>[]>(
     () => [
       {
@@ -25,15 +23,17 @@ export const BlogPostList = () => {
         header: ({ table }) => {
           return <DataTable.CheckAll {...table}>OK</DataTable.CheckAll>;
         },
-        cell: ({ row }) => (
-          <Checkbox
-            className="translate-y-[2px]"
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-            key={`checkbox-${row.original.id}`}
-          />
-        ),
+        cell: ({ row }) => {
+          return (
+            <Checkbox
+              className="translate-y-[2px]"
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+              key={`checkbox-${row.original.id}`}
+            />
+          );
+        },
       },
       {
         id: "id",
@@ -94,39 +94,30 @@ export const BlogPostList = () => {
         enableColumnFilter: false,
         header: "Actions",
         cell: function render({ getValue }) {
+          const id = getValue();
           return (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: "4px",
-              }}
-            >
-              <button
-                onClick={() => {
-                  show("blog_posts", getValue() as string);
-                }}
-              >
-                Show
-              </button>
-              <button
-                onClick={() => {
-                  edit("blog_posts", getValue() as string);
-                }}
-              >
-                Edit
-              </button>
-            </div>
+            <DataTable.RowActions>
+              <DataTable.ShowAction recordItemId={id} />
+              <DataTable.EditAction recordItemId={id} />
+              <DataTable.DeleteAction recordItemId={id} />
+            </DataTable.RowActions>
           );
         },
       },
     ],
-    [edit, show]
+    []
   );
 
-  const tableProps = useTable({
+  const [totalRows, setTotalRows] = useState(0);
+
+  const tableProps = useTable<BaseRecord>({
     columns,
+    enableRowSelection: true,
+    getRowId: (row, index) => row?.id?.toString() || index.toString(),
+    meta: {
+      totalRows,
+      setTotalRows,
+    },
   });
 
   const {
@@ -141,6 +132,10 @@ export const BlogPostList = () => {
       enabled: !!tableData?.data,
     },
   });
+
+  useEffect(() => {
+    (tableProps.options.meta as any).setTotalRows(tableData?.total);
+  }, [tableData?.total, tableProps.options.meta]);
 
   tableProps.setOptions((prev) => ({
     ...prev,
